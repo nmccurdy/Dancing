@@ -281,6 +281,13 @@ class Dude:
 
 
     poseBigHead = DudePose(headRadius=3)
+    
+    poseRunning1 = DudePose(upperLegLeft=[[8,12], [8,14]],
+                            lowerLegLeft=[[8,14], [8,16]],
+                            upperLegRight=[[8,12],[10,14]],
+                            lowerLegRight=[[10,14],[9,16]])
+
+
     # pose.draw(gameDisplay, self.position, self.size)
 
     # poseHalfWay = DudePose.lerp(pose, poseM, .25)
@@ -295,13 +302,16 @@ class Dude:
     else:
         headBeat = DudePose.lerp(poseBigHead, pose, (beat-int(beat)-.5)*2, pose, ["headRadius"])
 
+    if beat - int(beat) < 1:
+        lerp = DudePose.lerp(pose, poseRunning1, (beat-int(beat)), headBeat, ["upperLegLeft", "lowerLegLeft", "upperLegRight", "lowerLegRight"])
+
     if beat < 1:
-      headBeat.draw(gameDisplay, self.position, self.size)
+      lerp.draw(gameDisplay, self.position, self.size)
     elif beat < 1.5:
-      lerpPose = DudePose.lerp(pose, poseM, (beat-1)*2, headBeat, ["lowerArmLeft", "upperArmLeft", "lowerArmRight", "upperArmRight"])
+      lerpPose = DudePose.lerp(pose, poseM, (beat-1)*2, lerp, ["lowerArmLeft", "upperArmLeft", "lowerArmRight", "upperArmRight"])
       lerpPose.draw(gameDisplay, self.position, self.size)
     else:
-      lerpPose = DudePose.lerp(pose, poseM, 1, headBeat, ["lowerArmLeft", "upperArmLeft", "lowerArmRight", "upperArmRight"])
+      lerpPose = DudePose.lerp(pose, poseM, 1, lerp, ["lowerArmLeft", "upperArmLeft", "lowerArmRight", "upperArmRight"])
       lerpPose.draw(gameDisplay, self.position, self.size)
 
 
