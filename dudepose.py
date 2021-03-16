@@ -1,5 +1,6 @@
 import pygame
 from lerp import lerp,lerpList
+import copy
 
 class DudePose:
 
@@ -29,6 +30,9 @@ class DudePose:
     self.lowerLegRight = lowerLegRight
 
 
+  def __str__(self):
+      return "head: {},{}; body: {}; armLeft: {},{}; armRight: {},{}; legLeft: {},{}; legRight: {},{}".format(self.headPos, self.headRadius, self.body, self.upperArmLeft, self.lowerArmLeft, self.upperArmRight, self.lowerArmRight, self.upperLegLeft, self.lowerLegLeft, self.upperLegRight, self.lowerLegRight)
+
   def drawLine(self, gameDisplay, position, scale, startingPoint, endingPoint, color = (0,0,0)):
     posAdjusted = (position[0], position[1] - (16*scale))
 
@@ -56,27 +60,31 @@ class DudePose:
 
 
   @classmethod
-  def lerp(cls, startingPose, endingPose, fraction):
-    newHeadPos = lerp(startingPose.headPos, endingPose.headPos, fraction)
-    newHeadRadius = lerp([startingPose.headRadius], [endingPose.headRadius], fraction)
-    newUpperArmLeft = lerpList(startingPose.upperArmLeft, endingPose.upperArmLeft, fraction)
-    newLowerArmLeft = lerpList(startingPose.lowerArmLeft, endingPose.lowerArmLeft, fraction)
-    newUpperArmRight = lerpList(startingPose.upperArmRight, endingPose.upperArmRight, fraction)
-    newLowerArmRight = lerpList(startingPose.lowerArmRight, endingPose.lowerArmRight, fraction)
-    newUpperLegLeft = lerpList(startingPose.upperLegLeft, endingPose.upperLegLeft, fraction)
-    newLowerLegLeft = lerpList(startingPose.lowerLegLeft, endingPose.lowerLegLeft, fraction)
-    newUpperLegRight = lerpList(startingPose.upperLegRight, endingPose.upperLegRight, fraction)
-    newLowerLegRight = lerpList(startingPose.lowerLegRight, endingPose.lowerLegRight, fraction)
+  def lerp(cls, startingPose, endingPose, fraction, base = None, limbs=["headPos", "headRadius", "upperArmLeft", "lowerArmLeft", "upperArmRight", "lowerArmRight", "upperLegleft", "lowerLegLeft", "upperLegRight", "lowerLegRight"]):
+    if not base:
+        newPose = DudePose()
+    else:
+        newPose = copy.copy(base)
+        
+    if "headPos" in limbs:
+        newPose.headPos = lerp(startingPose.headPos, endingPose.headPos, fraction)
+    if "headRadius" in limbs:
+        newPose.headRadius = lerp([startingPose.headRadius], [endingPose.headRadius], fraction)[0]
+    if "upperArmLeft" in limbs:
+        newPose.upperArmLeft = lerpList(startingPose.upperArmLeft, endingPose.upperArmLeft, fraction)
+    if "lowerArmLeft" in limbs:
+        newPose.lowerArmLeft = lerpList(startingPose.lowerArmLeft, endingPose.lowerArmLeft, fraction)
+    if "upperArmRight" in limbs:
+        newPose.upperArmRight = lerpList(startingPose.upperArmRight, endingPose.upperArmRight, fraction)
+    if "lowerArmRight" in limbs:
+        newPose.lowerArmRight = lerpList(startingPose.lowerArmRight, endingPose.lowerArmRight, fraction)
+    if "upperLegLeft" in limbs:
+        newPose.upperLegLeft = lerpList(startingPose.upperLegLeft, endingPose.upperLegLeft, fraction)
+    if "lowerLegLeft" in limbs:
+        newPose.lowerLegLeft = lerpList(startingPose.lowerLegLeft, endingPose.lowerLegLeft, fraction)
+    if "upperLegRight" in limbs:
+        newPose.upperLegRight = lerpList(startingPose.upperLegRight, endingPose.upperLegRight, fraction)
+    if "lowerLegRight" in limbs:
+        newPose.lowerLegRight = lerpList(startingPose.lowerLegRight, endingPose.lowerLegRight, fraction)
 
-
-    return DudePose(headPos = newHeadPos,
-                    headRadius = newHeadRadius[0],
-                    upperArmLeft = newUpperArmLeft,
-                    lowerArmLeft = newLowerArmLeft,
-                    upperArmRight = newUpperArmRight,
-                    lowerArmRight = newLowerArmRight,
-                    upperLegLeft = newUpperLegLeft,
-                    lowerLegLeft = newLowerLegLeft,
-                    upperLegRight = newUpperLegRight,
-                    lowerLegRight = newLowerLegRight                    
-                    )
+    return newPose

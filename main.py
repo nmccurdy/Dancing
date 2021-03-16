@@ -280,6 +280,7 @@ class Dude:
                       upperArmRight=[[8,6],[4,6]])
 
 
+    poseBigHead = DudePose(headRadius=3)
     # pose.draw(gameDisplay, self.position, self.size)
 
     # poseHalfWay = DudePose.lerp(pose, poseM, .25)
@@ -288,13 +289,20 @@ class Dude:
 
     beat = TEMPO.getBeat()
 
+
+    if beat - int(beat) < .5:
+        headBeat = DudePose.lerp(pose, poseBigHead, (beat-int(beat))*2, pose, ["headRadius"])
+    else:
+        headBeat = DudePose.lerp(poseBigHead, pose, (beat-int(beat)-.5)*2, pose, ["headRadius"])
+
     if beat < 1:
-      pose.draw(gameDisplay, self.position, self.size)
+      headBeat.draw(gameDisplay, self.position, self.size)
     elif beat < 1.5:
-      lerpPose = DudePose.lerp(pose, poseM, (beat-1)*2)
+      lerpPose = DudePose.lerp(pose, poseM, (beat-1)*2, headBeat, ["lowerArmLeft", "upperArmLeft", "lowerArmRight", "upperArmRight"])
       lerpPose.draw(gameDisplay, self.position, self.size)
     else:
-      poseM.draw(gameDisplay, self.position, self.size)
+      lerpPose = DudePose.lerp(pose, poseM, 1, headBeat, ["lowerArmLeft", "upperArmLeft", "lowerArmRight", "upperArmRight"])
+      lerpPose.draw(gameDisplay, self.position, self.size)
 
 
     # if self.animationFinished:
